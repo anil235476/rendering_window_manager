@@ -2,7 +2,7 @@
 #include <thread>
 #include <cassert>
 //#include "video_render_util.h"
-#include "websocket_server/websocket_server.h"
+#include "websocket_server.h"
 #include <future>
 #include "display_manager/layout_manager.h"
 #include "display_manager/window_creater.h"

@@ -1,15 +1,18 @@
 cmake_minimum_required(VERSION 3.5)
 
 set(EXE_NAME rendering_window)
+set(BOOST_LIB "D:/boost_1_69_0/boost_1_69_0")
+
+ADD_DEFINITIONS(-D_UNICODE)
+add_definitions(/ZI)
 
 add_subdirectory(display_manager)
-
+add_subdirectory(external_lib)
 add_executable(${EXE_NAME} WIN32
 main.cpp
 )
 
 
-add_definitions(/ZI)
 
 # Add some compile flags to our source files.
 if(MSVC)
@@ -27,10 +30,10 @@ else()
 endif()
 
 target_include_directories(${EXE_NAME} PUBLIC
-#	"${PROJECT_SOURCE_DIR}/deps/libsdptransform/include"
-	"${PROJECT_SOURCE_DIR}/lib/json_parser/"
-#	"${PROJECT_SOURCE_DIR}/lib/media_render_util/"
-#	"${LIBWEBRTC_INCLUDE_PATH}"
+	"${PROJECT_SOURCE_DIR}/external_lib/json_parser/"
+	"${PROJECT_SOURCE_DIR}/external_lib/websocket_server/"
+	"${PROJECT_SOURCE_DIR}/external_lib/function_thread_handler/"
+	"${PROJECT_SOURCE_DIR}/external_lib"
 	"${LIBWEBRTC_INCLUDE_PATH}/third_party/abseil-cpp"
 )
 
@@ -47,30 +50,7 @@ target_link_libraries(${EXE_NAME} PUBLIC
 	websocket_server
 	func_thread_handler
 	json_parser
-	#media_render_util
-#	sdptransform
-#[==[
-	${LIBWEBRTC_BINARY_PATH}/webrtc${CMAKE_STATIC_LIBRARY_SUFFIX}
-	${PROJECT_SOURCE_DIR}/lib/mediasoup/Debug/mediasoupclient.lib
-	${PROJECT_SOURCE_DIR}/lib/mediasoup/Debug/sdptransform.lib
-	signaller
-	json_parser
-	winmm
-	dmoguids
-	wmcodecdspuuid
-	msdmo
-	secur32
-	mediasoup_conference
-	func_thread_handler
-	websocket_server
-	video_receiver
-	#]==]
-#amstrmid.lib
-#crypt32.lib
-#iphlpapi.lib
-#media_render_util
-#video_render
-#	d3d9
+	
 )
 
 
