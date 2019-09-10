@@ -167,7 +167,12 @@ void server_handler::on_message(grt::message_type type, absl::any msg) {
 			window_map_.erase(id);
 		}
 		const auto m = grt::make_render_wnd_close_res(isValidClose, id);
-		func_object_.dispatch(UI_SERVER_ID, m);
+		if(func_object_.is_dispatch_id_exists(UI_SERVER_ID))
+			func_object_.dispatch(UI_SERVER_ID, m);
+		else {
+			//todo: log thisl
+			
+		}
 
 	}
 		break;
