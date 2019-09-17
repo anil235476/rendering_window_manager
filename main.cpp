@@ -12,8 +12,7 @@
 
 constexpr const wchar_t* WNDCLASS_NAME = L"Sample Window Class";
 const std::wstring child_id{ L"test" };
-#define ID_CLOSE 00101
-
+#define ID_CLOSE 1101
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 std::vector<std::string> 
@@ -233,6 +232,19 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	switch (uMsg)
 	{
+	case WM_COMMAND:
+	{
+		int wmId = LOWORD(wParam);
+		// Parse the menu selections:
+		switch (wmId)
+		{
+			case ID_CLOSE:
+			{
+				MessageBoxA(0, "Close Button Clicked...", "	Clicked... ", 0);
+			}
+		}
+	}
+	break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		return 0;
@@ -244,24 +256,6 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		FillRect(hdc, &ps.rcPaint, (HBRUSH)(COLOR_WINDOW + 1));
 		EndPaint(hwnd, &ps);
 	}
-	break;
-	case WM_COMMAND:
-	{
-		int wmId = LOWORD(wParam);
-		switch (wmId)
-		{
-			case ID_CLOSE:
-			{
-				MessageBoxA(0, "Close Button Clicked...", "	Clicked... ", 0);
-			}
-			break;
-			default:
-				return DefWindowProc(hwnd, uMsg, wParam, lParam);
-		}
-	}
-	break;
-
-	default:
 	return 0;
 
 	}
