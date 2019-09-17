@@ -18,6 +18,8 @@ namespace display {
 		HWND parent_window_;
 		HINSTANCE instance_;
 		const wchar_t* class_name_{ nullptr };
+
+		HWND leave_btn_window_;
 	};
 
 }		//display

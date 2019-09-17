@@ -5,6 +5,7 @@
 
 constexpr const wchar_t* WNDCLASS_NAME = L"Sample Window Class";
 constexpr const wchar_t* WND_NAME = L"Main Window";
+#define ID_CLOSE 00101
 
 namespace display {
 
@@ -31,6 +32,14 @@ namespace display {
 		}
 
 		parent_window_ = hwnd;
+
+		int x = width / 2 - 30;
+		int y = height - 120;
+		auto leave_window = ::CreateWindowEx(WS_EX_TOPMOST, L"Button", L"Leave", WS_CHILD | WS_TABSTOP, x, y, 70, 20,
+			parent_window_, reinterpret_cast<HMENU>(ID_CLOSE), GetModuleHandle(NULL), NULL);
+
+		leave_btn_window_ = leave_window;
+		ShowWindow(leave_window, SW_SHOWNA);
 	}
 	create_win32_window::~create_win32_window() {
 		DestroyWindow(parent_window_);
@@ -41,14 +50,14 @@ namespace display {
 	}
 
 	window* create_win32_window::create_window(std::string wnd_name) {
-		HWND child_window = CreateWindowEx(0, class_name_, std::wstring{ wnd_name.begin(), wnd_name.end() }.c_str(), WS_CHILD | WS_BORDER,
+		HWND child_window = CreateWindowEx(0, class_name_, std::wstring{ wnd_name.begin(), wnd_name.end() }.c_str(), WS_CHILD | WS_CLIPSIBLINGS | WS_BORDER,
 			CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, parent_window_, (HMENU)(int)(0), instance_, NULL);
 
 		if (!child_window) {
 			assert(false);
 			return nullptr;
 		}
-		return new win32_window{ child_window, wnd_name };
+		return new win32_window{ child_window, wnd_name, leave_btn_window_ };
 
 	}
 	
