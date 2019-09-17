@@ -5,7 +5,7 @@
 
 constexpr const wchar_t* WNDCLASS_NAME = L"Sample Window Class";
 constexpr const wchar_t* WND_NAME = L"Main Window";
-#define ID_CLOSE 00101
+#define ID_CLOSE 1101
 
 namespace display {
 
