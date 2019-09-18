@@ -10,3 +10,11 @@
 	path = external_lib/function_thread_handler
 	url = https://github.com/anil235476/func_thread_handler
 	branch = master
+[submodule "unit_test/rendering_server_client"]
+	path = unit_test/rendering_server_client
+	url = https://github.com/anil235476/rendering_server_client
+	branch = master
+[submodule "unit_test/signaller"]
+	path = unit_test/signaller
+	url = https://github.com/anil235476/websocket_client
+	branch = master

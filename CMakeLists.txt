@@ -8,6 +8,12 @@ add_definitions(/ZI)
 
 add_subdirectory(display_manager)
 add_subdirectory(external_lib)
+if(ENABLE_TEST)
+set(SIGNALLER_LIB_PATH "D:/git_project/rendering_window_manager/unit_test")
+set(JSON_INCLUDE "D:/git_project/rendering_window_manager/external_lib/json_parser/include")
+set(JSON_LIB_PATH "D:/git_project/rendering_window_manager/external_lib")
+	add_subdirectory(unit_test)
+endif(ENABLE_TEST)
 add_executable(${EXE_NAME} WIN32
 main.cpp
 )
@@ -52,6 +58,7 @@ target_link_libraries(${EXE_NAME} PUBLIC
 	json_parser
 	
 )
+
 
 
 

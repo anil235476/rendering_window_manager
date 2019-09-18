@@ -15,6 +15,26 @@ const std::wstring child_id{ L"test" };
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
+namespace grt {
+	bool show_window(HWND hwnd, bool to_show) {
+		assert(hwnd);
+		const auto flags = to_show ? SWP_SHOWWINDOW : SWP_HIDEWINDOW;
+		const auto second_flag = to_show ? HWND_TOPMOST : HWND_NOTOPMOST;
+		const auto ret = SetWindowPos(hwnd,
+			second_flag,
+			0,
+			0,
+			0,
+			0,
+			SWP_NOSIZE | flags
+		);
+		assert(ret);
+		if (to_show)
+			PostMessage(hwnd, WM_SYSCOMMAND, SC_MAXIMIZE, 0);
+		return ret;
+	}
+}//namespace grt
+
 std::vector<std::string> 
 id_generator(const int n) {
 	std::vector<std::string> ret(n);
@@ -176,6 +196,15 @@ void server_handler::on_message(grt::message_type type, absl::any msg) {
 
 	}
 		break;
+
+	case grt::message_type::wnd_show_hide:
+	{
+		const auto to_show = absl::any_cast<bool>(msg);
+		assert(main_wnd_);
+		const auto r =grt::show_window(main_wnd_->get_handle(), to_show);
+		assert(r);
+	}
+	break;
 
 	}
 }
