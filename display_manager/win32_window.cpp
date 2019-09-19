@@ -3,8 +3,8 @@
 
 namespace display {
 
-	win32_window::win32_window(HWND handle, std::string name, HWND leave_btn)
-		:hwnd_{ handle }, name_{ name }, leave_btn_{ leave_btn } {
+	win32_window::win32_window(HWND handle, std::string name)
+		:hwnd_{ handle }, name_{ name } {
 		
 	}
 
@@ -24,8 +24,6 @@ namespace display {
 		);
 		assert(ret);
 		ShowWindow(hwnd_, SW_SHOWNORMAL);
-
-		SetWindowPos(leave_btn_, HWND_TOP, 0, 0, 0, 0, SWP_SHOWWINDOW | SWP_NOSIZE | SWP_NOMOVE);
 	}
 
 	std::pair<int, int>
