@@ -32,14 +32,6 @@ namespace display {
 		}
 
 		parent_window_ = hwnd;
-
-		int x = width / 2 - 30;
-		int y = height - 120;
-		auto leave_window = ::CreateWindowEx(WS_EX_TOPMOST, L"Button", L"Leave", WS_CHILD | WS_TABSTOP, x, y, 70, 20,
-			parent_window_, reinterpret_cast<HMENU>(ID_CLOSE), GetModuleHandle(NULL), NULL);
-
-		leave_btn_window_ = leave_window;
-		ShowWindow(leave_window, SW_SHOWNA);
 	}
 	create_win32_window::~create_win32_window() {
 		DestroyWindow(parent_window_);
@@ -57,7 +49,7 @@ namespace display {
 			assert(false);
 			return nullptr;
 		}
-		return new win32_window{ child_window, wnd_name, leave_btn_window_ };
+		return new win32_window{ child_window, wnd_name};
 
 	}
 	
