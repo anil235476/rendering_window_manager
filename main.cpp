@@ -103,6 +103,19 @@ HWND create_leave_window(HWND parent_wnd) {
 	return leave_window;
 }
 
+util::func_thread_handler* client_ = nullptr;
+
+void set_server_client_handle(util::func_thread_handler* client) {
+	assert(client_ == nullptr);
+	client_ = client;
+	assert(client_);
+}
+
+void send_message_to_client(std::string const& m) {
+	assert(client_);
+	client_->dispatch(UI_SERVER_ID, m);
+}
+
 class server_handler : public grt::parser_callback {
 private:
 	 util::func_thread_handler func_object_;
@@ -135,6 +148,7 @@ server_handler::server_handler(std::unique_ptr<display::window_creator> main_wnd
 	leave_btn_y_{ display::get_desktop_height() - 120 } {	
 	
 	leave_btn_.reposition(leave_btn_x_, leave_btn_y_, 70, 20);
+	set_server_client_handle(&func_object_);
 }
 
 void server_handler::start_server(unsigned short port) {
@@ -278,14 +292,10 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_COMMAND:
 	{
-		int wmId = LOWORD(wParam);
-		// Parse the menu selections:
-		switch (wmId)
-		{
-			case ID_CLOSE:
-			{
-				MessageBoxA(0, "Close Button Clicked...", "	Clicked... ", 0);
-			}
+		if (LOWORD(wParam) == ID_CLOSE) {
+			//MessageBoxA(0, "Close Button Clicked...", "	Clicked... ", 0);
+			const auto m = grt::make_user_session_leave_req();
+			send_message_to_client(m);
 		}
 	}
 	break;

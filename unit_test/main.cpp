@@ -34,5 +34,13 @@ TEST_CASE("test show hide", "[unit-test]") {
 		REQUIRE(response == 1);
 		std::this_thread::sleep_for(std::chrono::seconds(3));
 	}
+	{
+		sender.register_for_session_leave_msg([](auto, auto) {
+			std::cout << "received close request, \n";
+		});
+		std::cout << "wait for leave from rendering window\n";
+		int response;
+		std::cin >> response;
+	}
 
 }
