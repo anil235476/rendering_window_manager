@@ -12,7 +12,7 @@
 
 constexpr const wchar_t* WNDCLASS_NAME = L"Sample Window Class";
 const std::wstring child_id{ L"test" };
-
+#define ID_CLOSE 1101
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 namespace grt {
@@ -97,6 +97,25 @@ struct windows_store {
 
 };
 
+HWND create_leave_window(HWND parent_wnd) {
+	auto leave_window = ::CreateWindowEx(WS_EX_TOPMOST, L"Button", L"Leave", WS_CHILD | WS_TABSTOP, 0, 0, 0, 0,
+		parent_wnd, reinterpret_cast<HMENU>(ID_CLOSE), GetModuleHandle(NULL), NULL);
+	return leave_window;
+}
+
+util::func_thread_handler* client_ = nullptr;
+
+void set_server_client_handle(util::func_thread_handler* client) {
+	assert(client_ == nullptr);
+	client_ = client;
+	assert(client_);
+}
+
+void send_message_to_client(std::string const& m) {
+	assert(client_);
+	client_->dispatch(UI_SERVER_ID, m);
+}
+
 class server_handler : public grt::parser_callback {
 private:
 	 util::func_thread_handler func_object_;
@@ -104,10 +123,12 @@ private:
 	 std::unique_ptr<display::window_creator> main_wnd_;	
 	 windows_store availabl_wnds_;
 	 windows_store used_wnds_;
+	 display::win32_window leave_btn_;
 	 display::layout_manager layout_{ display::get_desktop_width(),display::get_desktop_height(),
 		 display::get_desktop_width(),display::get_desktop_height() };
 	 std::map<std::string, display::window*> window_map_;
-	
+	 const int leave_btn_x_{ 0 };
+	 const int leave_btn_y_{ 0 };
 public:
 	explicit server_handler(std::unique_ptr<display::window_creator> main_wnd_, int child_wnd_count);
 	void start_server(unsigned short port);
@@ -121,7 +142,13 @@ public:
 
 server_handler::server_handler(std::unique_ptr<display::window_creator> main_wnd_, int child_wnd_count)
 	:main_wnd_{ std::move(main_wnd_) }, 
-	availabl_wnds_{ get_windows(this->main_wnd_.get(), id_generator(child_wnd_count)) } {
+	availabl_wnds_{ get_windows(this->main_wnd_.get(), id_generator(child_wnd_count)) },
+	leave_btn_{ create_leave_window(this->main_wnd_.get()->get_handle()),"Leave"},
+	leave_btn_x_{ display::get_desktop_width() / 2 - 30 },
+	leave_btn_y_{ display::get_desktop_height() - 120 } {	
+	
+	leave_btn_.reposition(leave_btn_x_, leave_btn_y_, 70, 20);
+	set_server_client_handle(&func_object_);
 }
 
 void server_handler::start_server(unsigned short port) {
@@ -156,6 +183,7 @@ void server_handler::on_message(grt::message_type type, absl::any msg) {
 		
 		used_wnds_.add(ptr);
 		layout_.add(ptr);
+		leave_btn_.reposition(leave_btn_x_, leave_btn_y_, 70, 20);
 		//availabl_wnds_.remove(ptr);
 
 		{
@@ -185,6 +213,7 @@ void server_handler::on_message(grt::message_type type, absl::any msg) {
 			used_wnds_.remove(wnd);
 			availabl_wnds_.add(wnd);
 			window_map_.erase(id);
+			leave_btn_.reposition(leave_btn_x_, leave_btn_y_, 70, 20);
 		}
 		const auto m = grt::make_render_wnd_close_res(isValidClose, id);
 		if(func_object_.is_dispatch_id_exists(UI_SERVER_ID))
@@ -261,6 +290,15 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	switch (uMsg)
 	{
+	case WM_COMMAND:
+	{
+		if (LOWORD(wParam) == ID_CLOSE) {
+			//MessageBoxA(0, "Close Button Clicked...", "	Clicked... ", 0);
+			const auto m = grt::make_user_session_leave_req();
+			send_message_to_client(m);
+		}
+	}
+	break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		return 0;

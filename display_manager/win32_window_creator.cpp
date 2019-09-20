@@ -5,6 +5,7 @@
 
 constexpr const wchar_t* WNDCLASS_NAME = L"Sample Window Class";
 constexpr const wchar_t* WND_NAME = L"Main Window";
+#define ID_CLOSE 1101
 
 namespace display {
 
@@ -41,7 +42,7 @@ namespace display {
 	}
 
 	window* create_win32_window::create_window(std::string wnd_name) {
-		HWND child_window = CreateWindowEx(0, class_name_, std::wstring{ wnd_name.begin(), wnd_name.end() }.c_str(), WS_CHILD | WS_BORDER,
+		HWND child_window = CreateWindowEx(0, class_name_, std::wstring{ wnd_name.begin(), wnd_name.end() }.c_str(), WS_CHILD | WS_CLIPSIBLINGS | WS_BORDER,
 			CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, parent_window_, (HMENU)(int)(0), instance_, NULL);
 
 		if (!child_window) {
