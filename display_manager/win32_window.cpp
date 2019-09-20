@@ -3,7 +3,7 @@
 
 namespace display {
 
-	win32_window::win32_window(HWND handle, std::string name)
+	win32_window::win32_window(HWND handle, std::string name) 
 		:hwnd_{ handle }, name_{ name } {
 		
 	}

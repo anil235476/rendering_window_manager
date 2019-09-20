@@ -49,7 +49,7 @@ namespace display {
 			assert(false);
 			return nullptr;
 		}
-		return new win32_window{ child_window, wnd_name};
+		return new win32_window{ child_window, wnd_name };
 
 	}
 	
