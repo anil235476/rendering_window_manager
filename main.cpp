@@ -129,6 +129,7 @@ private:
 	 std::map<std::string, display::window*> window_map_;
 	 const int leave_btn_x_{ 0 };
 	 const int leave_btn_y_{ 0 };
+	 std::unique_ptr<display::window> ui_wnd_;
 public:
 	explicit server_handler(std::unique_ptr<display::window_creator> main_wnd_, int child_wnd_count);
 	void start_server(unsigned short port);
@@ -145,10 +146,13 @@ server_handler::server_handler(std::unique_ptr<display::window_creator> main_wnd
 	availabl_wnds_{ get_windows(this->main_wnd_.get(), id_generator(child_wnd_count)) },
 	leave_btn_{ create_leave_window(this->main_wnd_.get()->get_handle()),"Leave"},
 	leave_btn_x_{ display::get_desktop_width() / 2 - 30 },
-	leave_btn_y_{ display::get_desktop_height() - 120 } {	
+	leave_btn_y_{ display::get_desktop_height() - 120 },
+	ui_wnd_{ this->main_wnd_.get()->create_window("ui_wnd") }{
 	
-	leave_btn_.reposition(leave_btn_x_, leave_btn_y_, 70, 20);
 	set_server_client_handle(&func_object_);
+	layout_.add(ui_wnd_.get());
+	
+
 }
 
 void server_handler::start_server(unsigned short port) {
@@ -229,9 +233,12 @@ void server_handler::on_message(grt::message_type type, absl::any msg) {
 	case grt::message_type::wnd_show_hide:
 	{
 		const auto to_show = absl::any_cast<bool>(msg);
-		assert(main_wnd_);
-		const auto r =grt::show_window(main_wnd_->get_handle(), to_show);
-		assert(r);
+		if (to_show) {
+			layout_.remove(ui_wnd_.get());
+		}
+		else {
+			layout_.add(ui_wnd_.get());
+		}
 	}
 	break;
 
