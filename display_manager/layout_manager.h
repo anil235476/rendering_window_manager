@@ -11,6 +11,7 @@ namespace display {
 		layout_manager(int width, int height, int aspect_w, int aspect_h);
 		void add(window* child);
 		void remove(window* child);
+		bool is_exists(window* child) const;
 
 	private:
 		int get_window_position(int window_number, int total_window, int &x, int &y, int &w, int &h);

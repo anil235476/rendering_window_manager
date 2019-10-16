@@ -1,5 +1,6 @@
 #include "layout_manager.h"
 #include <algorithm>
+#include <cassert>
 
 namespace display {
 	layout_manager::layout_manager(int width, int height, int aspect_w, int aspect_h) : 
@@ -7,6 +8,7 @@ namespace display {
 	}
 
 	void layout_manager::add(window* child) {
+		assert(!is_exists(child));
 		v_child_wind_.push_back(child);
 		reposition();
 	}
@@ -14,18 +16,13 @@ namespace display {
 	void layout_manager::remove(window* child) {
 
 		auto iter = std::find(v_child_wind_.begin(), v_child_wind_.end(), child);
+		assert(iter != v_child_wind_.end());
 		v_child_wind_.erase(iter);
 		reposition();
-		/*int vector_index{ 0 };
-		for (const auto& i : v_child_wind_) {
-			if (child == i) {				
-				v_child_wind_.erase(v_child_wind_.begin() + vector_index);
-				delete child;
-				reposition();
-				break;
-			}
-			vector_index++;
-		}*/
+	}
+
+	bool layout_manager::is_exists(window* child) const {
+		return std::find(v_child_wind_.begin(), v_child_wind_.end(), child) != v_child_wind_.end();
 	}
 
 	void layout_manager::reposition() {
@@ -34,7 +31,7 @@ namespace display {
 		int w{ 0 };
 		int h{ 0 };
 		int i = 1;
-
+		//todo: below logic should be improved.
 		auto it = v_child_wind_.begin();
 		for (; it != v_child_wind_.end(); it++) {
 			auto chd = *it;

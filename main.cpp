@@ -234,7 +234,8 @@ void server_handler::on_message(grt::message_type type, absl::any msg) {
 	{
 		const auto to_show = absl::any_cast<bool>(msg);
 		if (to_show) {
-			layout_.remove(ui_wnd_.get());
+			if(layout_.is_exists(ui_wnd_.get()))
+				layout_.remove(ui_wnd_.get());
 			leave_btn_.reposition(leave_btn_x_, leave_btn_y_, 70, 20);
 		}
 		else {
