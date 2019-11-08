@@ -14,10 +14,11 @@ namespace display {
 		void reposition(int x, int y, int w, int h) override;
 		HWND get_handle() const override {return hwnd_;}
 		std::string get_window_name() const override { return name_; }
+		void set_window_name(std::string name) override;
 
 	private:
 		HWND hwnd_;
-		const std::string name_;
+		std::string name_;
 	};
 
 	std::pair<int, int>

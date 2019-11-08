@@ -16,6 +16,8 @@ set(JSON_LIB_PATH "D:/git_project/rendering_window_manager/external_lib")
 endif(ENABLE_TEST)
 add_executable(${EXE_NAME} WIN32
 main.cpp
+button_handler.h
+button_handler.cpp
 )
 
 
