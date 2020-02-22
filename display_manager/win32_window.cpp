@@ -26,6 +26,13 @@ namespace display {
 		ShowWindow(hwnd_, SW_SHOWNORMAL);
 	}
 
+	void win32_window::set_window_name(std::string name) {
+		assert(name != name_);
+		const auto r = SetWindowText(hwnd_, std::wstring{ name.begin(), name.end() }.c_str());
+		assert(r);
+		name_ = name;
+	}
+
 	std::pair<int, int>
 		get_desktop_width_height() {
 		auto hwnd = GetDesktopWindow();

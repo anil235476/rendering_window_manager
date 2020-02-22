@@ -10,6 +10,8 @@ namespace display {
 		virtual void reposition(int x, int y, int w, int h) = 0;
 		virtual HWND get_handle() const = 0;
 		virtual std::string get_window_name() const = 0;
+		virtual void set_window_name(std::string name) = 0;
+
 	};
 }		//display
 #endif	//__WINDOW__
