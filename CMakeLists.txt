@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.5)
 
 set(EXE_NAME rendering_window)
 set(BOOST_LIB "D:/boost_1_69_0/boost_1_69_0")
+set(LIBWEBRTC_INCLUDE_PATH "D:/webrtcBuild/Sept/webrtc_checkout/src")
+set(ABSL_PATH "${LIBWEBRTC_INCLUDE_PATH}/third_party/abseil-cpp")
+set(LIBWEBRTC_BINARY_PATH "D:/git_project/webRTC_client/webrtc_open_source/debug")
 
 ADD_DEFINITIONS(-D_UNICODE)
 add_definitions(/ZI)
@@ -36,19 +39,6 @@ else()
 	set_source_files_properties(${SOURCE_FILES}
 		PROPERTIES COMPILE_FLAGS -Wall -Wextra -Wpedantic)
 endif()
-
-target_include_directories(${EXE_NAME} PUBLIC
-	"${PROJECT_SOURCE_DIR}/external_lib/json_parser/"
-	"${PROJECT_SOURCE_DIR}/external_lib/websocket_server/"
-	"${PROJECT_SOURCE_DIR}/external_lib/function_thread_handler/"
-	"${PROJECT_SOURCE_DIR}/external_lib"
-	"${LIBWEBRTC_INCLUDE_PATH}/third_party/abseil-cpp"
-)
-
-
-target_link_directories( ${EXE_NAME} PUBLIC
-	$<BUILD_INTERFACE:${BOOST_LIB}/stage/lib>
-)
 
 
 

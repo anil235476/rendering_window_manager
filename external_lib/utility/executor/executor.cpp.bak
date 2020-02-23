@@ -1,0 +1,86 @@
+#include "executor.h"
+#include <cassert>
+namespace util {
+
+	struct function_duration_observer {
+		//std::chrono::seconds duration_;
+		std::condition_variable cv_;
+		std::mutex mutex_;
+		std::thread t_;
+		function_duration_observer(std::chrono::seconds duration) {
+			t_ = std::thread{ &function_duration_observer::wait_for, this, duration };
+		}
+
+		~function_duration_observer() {
+			{
+				std::lock_guard<std::mutex> lck_{ mutex_ };
+				cv_.notify_all();
+			}
+			t_.join();
+
+		}
+		void wait_for(std::chrono::seconds duration) {
+			std::unique_lock<std::mutex> lck_{ mutex_ };
+			auto const status = cv_.wait_for(lck_, duration);
+			assert(status != std::cv_status::timeout);
+		}
+
+
+	   };
+
+		void executor::_execute() {
+
+			while (is_continue_) {
+
+				std::unique_lock<std::mutex> lc_{ mutex_ };
+				const auto is_empty = queue_.empty();
+				lc_.unlock();
+
+				if (is_empty == false) {
+					std::unique_lock<std::mutex> lck_{ mutex_ };
+					auto fun = std::move(queue_.front());
+					queue_.pop();
+					lck_.unlock();
+					//function_duration_observer obser{ std::chrono::seconds(5) };
+					fun();
+				}
+				else {
+					//queue is empty
+					std::unique_lock<std::mutex> lck_{ mutex_ };
+					if (queue_.empty()) {
+						cv_.wait_for(lck_, std::chrono::seconds(5));
+					}
+				}
+			}
+		}
+
+		void executor::submit(std::function<void()> fun) {
+			int i = 0;
+			while (!mutex_.try_lock()) {
+				if (++i == 5) {
+					assert(false);//in five attempt not able to get lock.
+					return;
+				}
+				std::this_thread::sleep_for(std::chrono::seconds(1));
+
+			}
+			//std::lock_guard<std::mutex> lc_{ mutex_ };
+			queue_.push(fun);
+			cv_.notify_one();
+			mutex_.unlock();
+		}
+
+		executor::~executor() {
+			is_continue_ = false;
+			if(t_.joinable())
+				t_.join();
+		}
+
+
+		void executor::execute() {
+			assert(is_continue_ == false);
+			is_continue_ = true;
+			t_ = std::thread{ &executor::_execute, this };
+		}
+
+}

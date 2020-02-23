@@ -1,7 +1,7 @@
 #define CATCH_CONFIG_MAIN  // This tells Catch to provide a main() - only do this in one cpp file
 #include "catch.hpp"
-#include "rendering_server_client/rendering_server_client.h"
-#include "json_parser/json_parser.h"
+#include "rendering_server_client.h"
+#include "json_parser.h"
 #include <chrono>
 
 TEST_CASE("test show hide", "[unit-test]") {

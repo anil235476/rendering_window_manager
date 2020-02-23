@@ -15,26 +15,21 @@ add_executable( unit_test
 			main.cpp
 			)
 
-target_include_directories(unit_test PUBLIC 
+target_include_directories(unit_test PRIVATE 
 	#$<BUILD_INTERFACE:${BOOST_LIB}>
 	#$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/signaller/>
 	#$<BUILD_INTERFACE:${CMAKE_HOME_DIRECTORY}/lib/signaller/>
 	#$<BUILD_INTERFACE:${ABSL_PATH}>
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/catch>
 	)
-	
-target_link_directories( unit_test PUBLIC
-"./rendering_server_client"
-	$<BUILD_INTERFACE:${BOOST_LIB}/stage/lib>
-	#$<BUILD_INTERFACE:${CMAKE_HOME_DIRECTORY}/webrtc_open_source/debug>
-)
 
 
 
-target_link_libraries( unit_test 
-json_parser
+
+target_link_libraries( unit_test PRIVATE
+#json_parser
 rendering_server_client
-signaller
-func_thread_handler
+#signaller
+#func_thread_handler
 
 )

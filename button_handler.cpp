@@ -1,7 +1,7 @@
 #include "button_handler.h"
 #include <string>
 #include <cassert>
-#include "function_thread_handler/func_thread_handler.h"
+#include "func_thread_handler.h"
 #include "json_parser.h"
 
 constexpr int LEAVE_BT_WIDTH = 70;
